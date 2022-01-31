@@ -79,7 +79,6 @@ namespace WUL_BRUTEFORCE_STAN
             List<char> invalid = new List<char> { };
             List<char> excluded = new List<char> { };
 
-            int attempts = 1;
             while (true) {
                 Console.WriteLine("Please enter the status of letters as presented.");
                 Console.WriteLine("x - gray, u - orange, c - green, b - blacklist word");
@@ -96,6 +95,7 @@ namespace WUL_BRUTEFORCE_STAN
                         string option = Console.ReadLine();
                         if (option == "b")
                         {
+                            Console.WriteLine(startword);
                             blacklist.Add(startword);
                             break;
                         }
@@ -138,39 +138,7 @@ namespace WUL_BRUTEFORCE_STAN
                 Console.WriteLine("Solving...");
                 Console.WriteLine("Finding Optimal Word");
 
-                words.ForEach(x => {
-                    bool fitinitial1 = true;
-                    int ic = 0;
-                    foreach (char w in solution)
-                    {
-                        if (w != '\x0000' && w != x[ic])
-                        {
-                            fitinitial1 = false;
-                        }
-                        ic++;
-                    }
-                    if (blacklist.Contains(x))
-                    {
-                        fitinitial1 = false;
-                    }
-                    if (fitinitial1 == true)
-                    {
-                        bool ispossible = true;
-                        foreach (char c in x)
-                        {
-                            if (excluded.Contains(c))
-                            {
-                                ispossible = false;
-                            }
-                        }
-                        if (ispossible == true && (invalid.All(y => x.Contains(y))))
-                        {
-                            startword = x;
-                            blacklist.Add(x);
-                            return;
-                        }
-                    }
-                });
+                startword = BruteForceNew(words, solution, blacklist, excluded, invalid);
 
                 if (!solution.Contains('\x0000'))
                 {
@@ -184,14 +152,53 @@ namespace WUL_BRUTEFORCE_STAN
                 Console.WriteLine("-------------------------");
                 Console.WriteLine("Press any key to continue.");
                 Console.WriteLine();
-
-                attempts++;
             }
         }
 
         public static int GDF(string word)
         {
             return vowels.ToList().FindAll(x => word.Contains(x)).Count;
+        }
+
+        public static string BruteForceNew(List<string> words, char[] solution, List<string> blacklist, List<char> excluded, List<char> invalid)
+        {
+            string rt = "";
+            foreach (string x in words) {
+                bool fitinitial1 = true;
+                int ic = 0;
+                foreach (char w in solution)
+                {
+                    if (w != '\x0000' && w != x[ic])
+                    {
+                        fitinitial1 = false;
+                    }
+                    ic++;
+                }
+                if (blacklist.Contains(x))
+                {
+                    fitinitial1 = false;
+                }
+                if (fitinitial1 == true)
+                {
+                    bool ispossible = true;
+                    foreach (char c in x)
+                    {
+                        if (excluded.Contains(c))
+                        {
+                            ispossible = false;
+                        }
+                    }
+                    if (ispossible == true && (invalid.All(y => x.Contains(y))))
+                    {
+                        blacklist.Add(x);
+                        invalid.Clear();
+                        rt = x;
+                        Console.WriteLine("check");
+                        break;
+                    }
+                }
+            }
+            return rt;
         }
 
         public static char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
