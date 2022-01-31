@@ -108,7 +108,7 @@ namespace WUL_BRUTEFORCE_STAN
                                 }
                                 break;
                             case "u":
-                                if (!invalid.Contains(c))
+                                if (!invalid.Contains(c) && !solution.Contains(c))
                                 {
                                     invalid.Add(c);
                                 }
@@ -143,6 +143,16 @@ namespace WUL_BRUTEFORCE_STAN
                 if (!solution.Contains('\x0000'))
                 {
                     return new string(solution);
+                }
+
+                if (startword == "")
+                {
+                    Console.WriteLine("-------------------------");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Word could not be found.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("-------------------------");
+                    return "Not Found";
                 }
 
                 Console.WriteLine("-------------------------");
